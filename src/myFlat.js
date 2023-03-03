@@ -1,25 +1,30 @@
 module.exports = function () {
   // чтобы не было ошибок, если в какой-то версии будет полифил такой
   if (!Array.prototype.myFlat) {
-    Array.prototype.myFlat = function (callback, initValue) {
-      if (!(this instanceof Array || this instanceof String)) {
+    Array.prototype.myFlat = function (depth = 1) {
+      if (!(this instanceof Array)) {
         throw TypeError(`Value have wrong type`);
       }
 
-      if (typeof callback !== "function") {
-        throw new TypeError(
-          `Array.prototype.myFlat ${callback} is not a function`
-        );
+      if (isNaN(depth) || depth <= 0) {
+        return this;
       }
 
-      let acc = arguments.length >= 2 ? initValue : this[0];
-      let countStart = arguments.length >= 2 ? 0 : 1;
+      function flatten(arr, depth) {
+        let result = [];
 
-      for (let i = countStart; i < this.length; i++) {
-        acc = callback(acc, this[i], i, this);
+        for (let i = 0; i < arr.length; i++) {
+          if (Array.isArray(arr[i]) && depth > 0) {
+            result.push(...flatten(arr[i], depth - 1));
+          } else {
+            result.push(arr[i]);
+          }
+        }
+
+        return result;
       }
 
-      return acc;
+      return flatten(this, depth);
     };
   }
 };
