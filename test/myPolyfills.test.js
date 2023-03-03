@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const myPolyfills = require('../myPolyfills');
+const myPolyfills = require('../src');
 
 describe('Testing myPolyfills', () => {
     before(() => {
